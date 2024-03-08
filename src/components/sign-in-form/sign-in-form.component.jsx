@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState,useContext } from "react";
 
 import FormInput from "../form-input/form-input.component";
-import './sign-in-form.styles.scss';
 import { 
     signInWithGooglePopup,
     createUserDocumentFromAuth,
     SignInAuthUserWithEmailAndPassword
 } from '../../Utils/Firebase/firebase.utils';
 import Button from "../button/button.component";
+import { UserContext } from '../../contexts/user.context'
+
+import './sign-in-form.styles.scss';
 const defaultFormFields = {
     email:'',
     password:'',
@@ -16,6 +18,7 @@ const defaultFormFields = {
 const SignInForm = ()=>{
     const [formField, setFormField] = useState(defaultFormFields);
     const {email,password} = formField;
+    const { setCurrentUser } = useContext(UserContext);
     // console.log(formField);
     const handleChange = (event) =>{
         const {name,value} = event.target;
@@ -27,7 +30,8 @@ const SignInForm = ()=>{
     const signInWithGoogle = async () => {
         try{
             const { user } = await signInWithGooglePopup();
-            const userDocRef = await createUserDocumentFromAuth(user);
+            setCurrentUser(user);
+            await createUserDocumentFromAuth(user);
         }catch(error){
             console.log('Error occured: ',error.message);
         }
@@ -36,9 +40,8 @@ const SignInForm = ()=>{
         event.preventDefault();
 
         try{
-            console.log("hi");
-            const response = await SignInAuthUserWithEmailAndPassword(email,password);
-            console.log(response);
+            const {user} = await SignInAuthUserWithEmailAndPassword(email,password);
+            setCurrentUser(user);
             resetFormField();
             }catch(error){
                 if(error.code === 'auth/invalid-credential'){
@@ -72,7 +75,7 @@ const SignInForm = ()=>{
                 />
                 <div className="buttons-container">
                 <Button type="submit" children='Sign In'/>
-                <Button children='Google Sign In' onClick={signInWithGoogle} buttonType='google'/>
+                <Button type='button' children='Google Sign In' onClick={signInWithGoogle} buttonType='google'/>
                 </div>
             </form>
         </div>
