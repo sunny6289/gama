@@ -1,5 +1,5 @@
 import { Routes,Route } from 'react-router-dom';
-import Home from './routes/home.component/home.component';
+import Home from './routes/Home/home.component';
 import Navigation from './routes/navigation.component/navigation.component';
 import Authentication from './routes/Authentication/authentication.component';
 import Contact from './routes/Contact/contact.component';
@@ -11,7 +11,7 @@ const App = () => {
     <Routes>
       <Route path='/' element={<Navigation/>}>
         <Route index element={<Home/>}/>
-        <Route path='shop' element={<Shop/>}/>
+        <Route path='shop/*' element={<Shop/>}/>
         <Route path='contact' element={<Contact/>}/>
         <Route path='auth' element={<Authentication/>}/>
         <Route path='checkout' element={<Checkout/>}/>
